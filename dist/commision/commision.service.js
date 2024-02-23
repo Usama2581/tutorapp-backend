@@ -34,15 +34,21 @@ let CommisionService = class CommisionService {
                     return {
                         message: 'Commision updated',
                         statusCode: 200,
-                        newCommision
+                        data: newCommision
                     };
                 }
                 else {
-                    throw new common_1.UnauthorizedException('Only admin can update commision.');
+                    throw new common_1.UnauthorizedException({
+                        message: 'Only admin can update commision.', data: null,
+                        statusCode: 400
+                    });
                 }
             }
             else {
-                throw new common_1.NotFoundException('User not found.');
+                throw new common_1.NotFoundException({
+                    message: 'User not found.', data: null,
+                    statusCode: 400
+                });
             }
         }
         catch (error) {
@@ -59,19 +65,29 @@ let CommisionService = class CommisionService {
                     if (data) {
                         return {
                             message: `Total ${value} are ${data}`,
-                            statusCode: 200
+                            statusCode: 200,
+                            data
                         };
                     }
                     else {
-                        throw new common_1.NotFoundException(`${value} Not found`);
+                        throw new common_1.NotFoundException({
+                            message: `${value} Not found`, data: null,
+                            statusCode: 400
+                        });
                     }
                 }
                 else {
-                    throw new common_1.UnauthorizedException('Only admin can access.');
+                    throw new common_1.UnauthorizedException({
+                        message: 'Only admin can access.', data: null,
+                        statusCode: 400
+                    });
                 }
             }
             else {
-                throw new common_1.NotFoundException('User not  found.');
+                throw new common_1.NotFoundException({
+                    message: 'User not  found.', data: null,
+                    statusCode: 400
+                });
             }
         }
         catch (error) {

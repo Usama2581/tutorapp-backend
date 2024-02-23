@@ -32,7 +32,7 @@ export declare class UserService {
     register(body: any): Promise<{
         message: string;
         statusCode: number;
-        user: import("mongoose").Document<unknown, {}, UserDocument> & import("./entities/user.entity").User & import("mongoose").Document<any, any, any> & {
+        data: import("mongoose").Document<unknown, {}, UserDocument> & import("./entities/user.entity").User & import("mongoose").Document<any, any, any> & {
             _id: import("mongoose").Types.ObjectId;
         };
     }>;

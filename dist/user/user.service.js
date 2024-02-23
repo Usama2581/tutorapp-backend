@@ -27,14 +27,17 @@ let UserService = class UserService {
     async register(body) {
         const user = await this.user.findOne({ email: body.email });
         if (user) {
-            throw new common_1.NotFoundException("user already exsist");
+            throw new common_1.NotFoundException({
+                message: "user already exsist", data: null,
+                statusCode: 400
+            });
         }
         else {
             const user = await this.user.create(body);
             return {
                 message: 'User registered',
                 statusCode: 200,
-                user
+                data: user
             };
         }
     }
@@ -47,11 +50,18 @@ let UserService = class UserService {
                 console.log(error);
             }
             if (!user) {
-                throw new common_1.NotFoundException('User not found.');
+                throw new common_1.NotFoundException({
+                    message: 'User not found.', data: null,
+                    statusCode: 400
+                });
             }
             const result = await bcrypt.compare(body.password, user.password);
             if (!result) {
-                throw new common_1.BadRequestException('Email or password is incorrect.');
+                throw new common_1.BadRequestException({
+                    message: 'Email or password is incorrect.',
+                    data: null,
+                    statusCode: 400
+                });
             }
             else {
                 const payload = { sub: user.password, username: user.name };
@@ -74,22 +84,32 @@ let UserService = class UserService {
                 if (user.userType === 'admin') {
                     const data = await this.user.find({ 'userType': value });
                     if (data.length === 0) {
-                        throw new common_1.NotFoundException(`${value} Not found`);
+                        throw new common_1.NotFoundException({
+                            message: `${value} Not found`,
+                            data: null,
+                            statusCode: 400
+                        });
                     }
                     else {
                         return {
                             message: `total ${value} are`,
+                            statusCode: 200,
                             data,
-                            statusCode: 200
                         };
                     }
                 }
                 else {
-                    throw new common_1.UnauthorizedException('Only admin can access.');
+                    throw new common_1.UnauthorizedException({
+                        message: 'Only admin can access.', data: null,
+                        statusCode: 400
+                    });
                 }
             }
             else {
-                throw new common_1.NotFoundException('User not  found.');
+                throw new common_1.NotFoundException({
+                    message: 'User not  found.', data: null,
+                    statusCode: 400
+                });
             }
         }
         catch (error) {

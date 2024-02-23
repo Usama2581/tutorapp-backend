@@ -43,28 +43,43 @@ let ProposalService = class ProposalService {
                                 return {
                                     message: 'Proposal submitted.',
                                     statusCode: 200,
-                                    proposal: newProposal,
-                                    updatedTution
+                                    data: updatedTution
                                 };
                             }
                             else {
-                                throw new common_1.ConflictException('you cannot apply again.');
+                                throw new common_1.ConflictException({
+                                    message: 'you cannot apply again.', data: null,
+                                    statusCode: 400
+                                });
                             }
                         }
                         else {
-                            throw new common_1.NotFoundException('Tution does not exsist.');
+                            throw new common_1.NotFoundException({
+                                message: 'Tution does not exsist.', data: null,
+                                statusCode: 400
+                            });
                         }
                     }
                     else {
-                        throw new common_1.ServiceUnavailableException(`Invalid amount ${body.amount}`);
+                        throw new common_1.ServiceUnavailableException({
+                            message: `Invalid amount ${body.amount}`, data: null,
+                            statusCode: 400
+                        });
                     }
                 }
                 else {
-                    throw new common_1.ServiceUnavailableException('Only teachers can add proposal.');
+                    throw new common_1.ServiceUnavailableException({
+                        message: 'Only teachers can add proposal.',
+                        data: null,
+                        statusCode: 400
+                    });
                 }
             }
             else {
-                throw new common_1.NotFoundException('User not found.');
+                throw new common_1.NotFoundException({
+                    message: 'User not found.', data: null,
+                    statusCode: 400
+                });
             }
         }
         catch (error) {
@@ -77,17 +92,24 @@ let ProposalService = class ProposalService {
             if (tution) {
                 const proposal = await this.proposal.find({ tution: id });
                 if (proposal.length === 0) {
-                    throw new common_1.BadRequestException('No proposals found.');
+                    throw new common_1.BadRequestException({
+                        message: 'No proposals found.', data: null,
+                        statusCode: 400
+                    });
                 }
                 else {
                     return {
+                        message: 'proposals',
                         statusCode: 200,
-                        proposal
+                        data: proposal
                     };
                 }
             }
             else {
-                throw new common_1.NotFoundException('Tution not found.');
+                throw new common_1.NotFoundException({
+                    message: 'Tution not found.', data: null,
+                    statusCode: 400
+                });
             }
         }
         catch (error) {
@@ -105,22 +127,38 @@ let ProposalService = class ProposalService {
                         const proposal = await this.proposal.findOne({ tution: body.tution, user: body.teacherId });
                         if (proposal) {
                             const newProposal = await this.proposal.findByIdAndUpdate({ _id: proposal._id }, { status: 'accepted' }, { new: true });
-                            return newProposal;
+                            return {
+                                message: 'propsal accepted ',
+                                statusCode: 200,
+                                data: newProposal
+                            };
                         }
                         else {
-                            throw new common_1.NotFoundException('Proposal not found.');
+                            throw new common_1.NotFoundException({
+                                message: 'Proposal not found.', data: null,
+                                statusCode: 400
+                            });
                         }
                     }
                     else {
-                        throw new common_1.NotFoundException('Tution not found.');
+                        throw new common_1.NotFoundException({
+                            message: 'Tution not found.', data: null,
+                            statusCode: 400
+                        });
                     }
                 }
                 else {
-                    throw new common_1.NotFoundException('Teacher not found');
+                    throw new common_1.NotFoundException({
+                        message: 'Teacher not found', data: null,
+                        statusCode: 400
+                    });
                 }
             }
             else {
-                throw new common_1.NotFoundException('Student not found');
+                throw new common_1.NotFoundException({
+                    message: 'Student not found', data: null,
+                    statusCode: 400
+                });
             }
         }
         catch (error) {
@@ -177,23 +215,35 @@ let ProposalService = class ProposalService {
                             return {
                                 message: 'Proposal updated',
                                 statusCode: 200,
-                                newProposal
+                                data: newProposal
                             };
                         }
                         else {
-                            throw new common_1.NotFoundException('Your proposal not found');
+                            throw new common_1.NotFoundException({
+                                message: 'Your proposal not found', data: null,
+                                statusCode: 400
+                            });
                         }
                     }
                     else {
-                        throw new common_1.NotFoundException("Tution not found.");
+                        throw new common_1.NotFoundException({
+                            message: "Tution not found.", data: null,
+                            statusCode: 400
+                        });
                     }
                 }
                 else {
-                    throw new common_1.NotFoundException("Only teachers can write and update proposals.");
+                    throw new common_1.NotFoundException({
+                        message: "Only teachers can write and update proposals.", data: null,
+                        statusCode: 400
+                    });
                 }
             }
             else {
-                throw new common_1.NotFoundException("User not found.");
+                throw new common_1.NotFoundException({
+                    message: "User not found.", data: null,
+                    statusCode: 400
+                });
             }
         }
         catch (error) {
@@ -213,26 +263,38 @@ let ProposalService = class ProposalService {
                             { $match: { 'tution': tutionId } }
                         ]);
                         if (proposals.length === 0) {
-                            throw new common_1.NotFoundException('proposals not found');
+                            throw new common_1.NotFoundException({
+                                message: 'proposals not found', data: null,
+                                statusCode: 400
+                            });
                         }
                         else {
                             return {
                                 statusCode: 200,
                                 message: 'Proposals found',
-                                proposals
+                                data: proposals
                             };
                         }
                     }
                     else {
-                        throw new common_1.NotFoundException('Tution not found.');
+                        throw new common_1.NotFoundException({
+                            message: 'Tution not found.', data: null,
+                            statusCode: 400
+                        });
                     }
                 }
                 else {
-                    throw new common_1.NotFoundException('Only admin can access this.');
+                    throw new common_1.NotFoundException({
+                        message: 'Only admin can access this.', data: null,
+                        statusCode: 400
+                    });
                 }
             }
             else {
-                throw new common_1.NotFoundException('User not found.');
+                throw new common_1.NotFoundException({
+                    message: 'User not found.', data: null,
+                    statusCode: 400
+                });
             }
         }
         catch (error) {

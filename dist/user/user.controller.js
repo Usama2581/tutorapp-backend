@@ -32,7 +32,10 @@ let UserController = class UserController {
         try {
             const data = await this.userService.login(body);
             if (data.statusCode) {
-                throw new common_1.NotFoundException('Email or password is incorrect.');
+                throw new common_1.NotFoundException({
+                    message: 'Email or password is incorrect.', data: null,
+                    statusCode: 400
+                });
             }
             else {
                 const { token, user } = data;
@@ -42,11 +45,14 @@ let UserController = class UserController {
                     sameSite: 'none',
                     secure: true
                 });
-                res.send({ message: 'loggedin', statusCode: 200, user });
+                res.send({ message: 'loggedin', statusCode: 200, data: user });
             }
         }
         catch (error) {
-            throw new common_1.NotFoundException(error.response.message);
+            throw new common_1.NotFoundException({
+                message: error.response.message, data: null,
+                statusCode: 400
+            });
         }
     }
     get(value, id) {
