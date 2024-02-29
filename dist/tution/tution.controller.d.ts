@@ -8,4 +8,5 @@ export declare class TutionController {
     findTutionIfProposalExsis(userId: any, tutionId: any): any;
     updateTution(userId: any, tutionId: any, body: any): any;
     getTutionByStatus(value: any, userId: any): Promise<any>;
+    deleteTution(id: any): any;
 }

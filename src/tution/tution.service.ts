@@ -1,254 +1,287 @@
-import { BadRequestException, Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { TutionDocument, TutionModel } from './entities/tution.entity';
 import { Model } from 'mongoose';
 import { UserDocument, UserModel } from '../user/entities/user.entity';
-import { CommisionDocument, CommisionModel } from 'src/commision/entities/commision.entity';
-import { ProposalDocument, ProposalModel } from 'src/proposal/entities/proposal.entity';
-
+import {
+  CommisionDocument,
+  CommisionModel,
+} from 'src/commision/entities/commision.entity';
+import {
+  ProposalDocument,
+  ProposalModel,
+} from 'src/proposal/entities/proposal.entity';
 
 @Injectable()
 export class TutionService {
-
   constructor(
     @InjectModel(UserModel) private user: Model<UserDocument>,
     @InjectModel(CommisionModel) private commision: Model<CommisionDocument>,
     @InjectModel(ProposalModel) private proposal: Model<ProposalDocument>,
-    @InjectModel(TutionModel) private tution: Model<TutionDocument>
-  ) { }
+    @InjectModel(TutionModel) private tution: Model<TutionDocument>,
+  ) {}
 
   findUser(user) {
     try {
-      return this.user.findOne({ _id: user })
+      return this.user.findOne({ _id: user });
     } catch (error) {
-      return error.response
+      return error.response;
     }
   }
 
   async postTution(body) {
     try {
-      const user = await this.findUser(body.user)
+      console.log('req ai');
+
+      const user = await this.findUser(body.user);
 
       if (user) {
         if (user.userType === 'student') {
+          const commision = await this.commision.find();
+          const newBody = { ...body, commision: commision[0].percentage };
 
-          const commision = await this.commision.find()
-          const newBody = { ...body, commision: commision[0].percentage }
-
-          const tution = await this.tution.create(newBody)
+          const tution = await this.tution.create(newBody);
 
           return {
-            message: 'posted',
+            message: 'tution created',
             statusCode: 200,
-            data: tution
-          }
-
-        }
-        else {
+            data: tution,
+          };
+        } else {
           throw new NotFoundException({
-            message: 'only sudents can post tution', data: null,
-            statusCode: 400
-          })
+            message: 'only sudents can post tution',
+            data: null,
+            statusCode: 400,
+          });
         }
-      }
-      else {
+      } else {
         throw new NotFoundException({
-          message: 'User not found.', data: null,
-          statusCode: 400
-        })
+          message: 'User not found.',
+          data: null,
+          statusCode: 400,
+        });
       }
-
     } catch (error) {
-      return error.response
+      return error.response;
     }
   }
 
   async find() {
     try {
-      const tution = await this.tution.find().populate('user')
+      console.log(1);
+
+      const tution = await this.tution.find().populate('user');
       if (tution.length == 0) {
         throw new BadRequestException({
-          message: 'Tutions not found.', data: null,
-          statusCode: 400
-        })
-      }
-      else {
+          message: 'Tutions not found.',
+          data: null,
+          statusCode: 400,
+        });
+      } else {
         return {
           message: 'tutions..',
           statusCode: 200,
-          data: tution
-        }
+          data: tution,
+        };
       }
     } catch (error) {
-      return error.response
+      return error.response;
     }
   }
 
   async findUserTution(id) {
     try {
-      const user = await this.findUser(id)
+      console.log(2);
+
+      const user = await this.findUser(id);
       if (user) {
-        const tution = await this.tution.find({ user: id })
+        const tution = await this.tution.find({ user: id });
         if (tution.length === 0) {
           throw new ServiceUnavailableException({
-            message: 'No tutions found.', data: null,
-            statusCode: 400
-          })
-        }
-        else {
+            message: 'No tutions found.',
+            data: null,
+            statusCode: 400,
+          });
+        } else {
           return {
             message: 'tutions',
             statusCode: 200,
-            data: tution
-          }
+            data: tution,
+          };
         }
-      }
-      else {
+      } else {
         throw new NotFoundException({
-          message: 'User not found.', data: null,
-          statusCode: 400
-        })
+          message: 'User not found.',
+          data: null,
+          statusCode: 400,
+        });
       }
     } catch (error) {
-      return error.response
+      return error.response;
     }
   }
 
   async findTutionIfProposalExsist(userId, tutionId) {
     try {
-      const user = await this.user.findById({ _id: userId })
+      const user = await this.user.findById({ _id: userId });
       if (user) {
         if (user.userType === 'student') {
           const tution = await this.tution.find({
             $and: [
               { user: { $eq: userId } },
-              { proposalsReceived: { $eq: true } }
-            ]
-          })
+              { proposalsReceived: { $eq: true } },
+            ],
+          });
           if (tution) {
             if (tution.length === 0) {
               throw new NotFoundException({
                 message: 'tutions not found.',
                 data: null,
-                statusCode: 400
-              })
-            }
-            else {
+                statusCode: 400,
+              });
+            } else {
               return {
                 message: 'Tution found',
                 statusCode: 200,
-                data: tution
-              }
+                data: tution,
+              };
             }
-          }
-          else {
+          } else {
             throw new NotFoundException({
-              message: 'tution doesnot exsist.', data: null,
-              statusCode: 400
-            })
+              message: 'tution doesnot exsist.',
+              data: null,
+              statusCode: 400,
+            });
           }
-        }
-        else {
+        } else {
           throw new ServiceUnavailableException({
-            message: 'only students can access this.', data: null,
-            statusCode: 400
-          })
+            message: 'only students can access this.',
+            data: null,
+            statusCode: 400,
+          });
         }
-      }
-      else {
+      } else {
         throw new ServiceUnavailableException({
-          message: 'user not found.', data: null,
-          statusCode: 400
-        })
+          message: 'user not found.',
+          data: null,
+          statusCode: 400,
+        });
       }
     } catch (error) {
-      return error.response
+      return error.response;
     }
   }
 
   async updateTution(userId, tutionId, body) {
     try {
-      const user = await this.user.findOne({ _id: userId })
+      const user = await this.user.findOne({ _id: userId });
       if (user) {
         if (user.userType === 'student') {
-          const tution = await this.tution.findOne({ _id: tutionId })
+          const tution = await this.tution.findOne({ _id: tutionId });
           if (tution) {
-            const result = await this.tution.findByIdAndUpdate({ _id: tution._id }, body, { new: true })
+            const result = await this.tution.findByIdAndUpdate(
+              { _id: tution._id },
+              body,
+              { new: true },
+            );
             return {
               message: 'tution updated',
               statusCode: 200,
-              data: result
-            }
-          }
-          else {
+              data: result,
+            };
+          } else {
             throw new NotFoundException({
-              message: 'tutin not found', data: null,
-              statusCode: 400
-            })
+              message: 'tutin not found',
+              data: null,
+              statusCode: 400,
+            });
           }
-        }
-        else {
+        } else {
           throw new NotFoundException({
-            message: 'only student can access this.', data: null,
-            statusCode: 400
-          })
+            message: 'only student can access this.',
+            data: null,
+            statusCode: 400,
+          });
         }
-      }
-      else {
+      } else {
         throw new NotFoundException({
-          message: 'user not found', data: null,
-          statusCode: 400
-        })
+          message: 'user not found',
+          data: null,
+          statusCode: 400,
+        });
       }
     } catch (error) {
-      return error.response
+      return error.response;
     }
   }
 
   async getTutionByStatus(value, userId) {
-    console.log(userId)
+    console.log(userId);
     try {
-      const user = await this.user.findOne({ _id: userId })
+      const user = await this.user.findOne({ _id: userId });
 
       if (user) {
         if (user.userType === 'admin') {
-
           const tution = await this.tution.aggregate([
-            { $match: { 'status': value } },
-          ])
+            { $match: { status: value } },
+          ]);
           if (tution.length === 0) {
             throw new NotFoundException({
-              message: 'Tution not found', data: null,
-              statusCode: 400
-            })
-          }
-          else {
+              message: 'Tution not found',
+              data: null,
+              statusCode: 400,
+            });
+          } else {
             return {
               message: 'Tution found.',
               statusCode: 200,
-              data: tution
-            }
+              data: tution,
+            };
           }
-        }
-        else {
+        } else {
           throw new NotFoundException({
-            message: 'Only admin can access this.', data: null,
-            statusCode: 400
-          })
+            message: 'Only admin can access this.',
+            data: null,
+            statusCode: 400,
+          });
         }
-      }
-      else {
+      } else {
         throw new NotFoundException({
-          message: 'User not found.', data: null,
-          statusCode: 400
-        })
+          message: 'User not found.',
+          data: null,
+          statusCode: 400,
+        });
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
 
-      return error.response
+      return error.response;
     }
   }
 
-
+  async deleteTution(id) {
+    try {
+      const tution = await this.tution.findOne({ _id: id });
+      if (!tution) {
+        throw new NotFoundException({
+          message: 'tution not found',
+          data: null,
+          statusCode: 400,
+        });
+      }
+      const data = await this.tution.findByIdAndDelete({ _id: id });
+      return {
+        message: 'tution deleted',
+        statusCode: 200,
+        data
+      }
+    } catch (error) {
+      return error.response;
+    }
+  }
 }

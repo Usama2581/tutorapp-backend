@@ -306,6 +306,26 @@ export class ProposalService {
     }
   }
 
+  async deleteProposal(id) {
+    try {
+      const tution = await this.proposal.findOne({ _id: id });
+      if (!tution) {
+        throw new NotFoundException({
+          message: 'proposal not found',
+          data: null,
+          statusCode: 400,
+        });
+      }
+      const data = await this.proposal.findByIdAndDelete({ _id: id });
+      return {
+        message: 'proposal deleted',
+        statusCode: 200,
+        data
+      }
+    } catch (error) {
+      return error.response;
+    }
+  }
 
 }
 

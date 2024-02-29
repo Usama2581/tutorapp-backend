@@ -37,4 +37,5 @@ export declare class ProposalService {
     rejectProposal(body: any): Promise<any>;
     updateProposal(userId: any, tutionId: any, body: any): Promise<any>;
     getProposalByStatus(value: any, userId: any, tutionId: any): Promise<any>;
+    deleteProposal(id: any): Promise<any>;
 }

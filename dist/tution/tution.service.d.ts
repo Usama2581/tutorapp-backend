@@ -40,4 +40,5 @@ export declare class TutionService {
     findTutionIfProposalExsist(userId: any, tutionId: any): Promise<any>;
     updateTution(userId: any, tutionId: any, body: any): Promise<any>;
     getTutionByStatus(value: any, userId: any): Promise<any>;
+    deleteTution(id: any): Promise<any>;
 }

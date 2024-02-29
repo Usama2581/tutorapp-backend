@@ -31,4 +31,7 @@ export declare class CommisionService {
     constructor(commision: Model<CommisionDocument>, user: Model<UserDocument>);
     update(body: any): Promise<any>;
     sum(value: any, id: any): Promise<any>;
+    create(): Promise<import("mongoose").Document<unknown, {}, CommisionDocument> & import("./entities/commision.entity").Commision & Document & {
+        _id: import("mongoose").Types.ObjectId;
+    }>;
 }

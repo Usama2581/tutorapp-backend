@@ -84,5 +84,8 @@ export class CommisionService {
     }
   }
 
+  create() {
+    return this.commision.create({ percentage: 10 })
+  }
 
 }

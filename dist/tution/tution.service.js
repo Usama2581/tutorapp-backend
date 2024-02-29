@@ -37,6 +37,7 @@ let TutionService = class TutionService {
     }
     async postTution(body) {
         try {
+            console.log('req ai');
             const user = await this.findUser(body.user);
             if (user) {
                 if (user.userType === 'student') {
@@ -44,22 +45,24 @@ let TutionService = class TutionService {
                     const newBody = { ...body, commision: commision[0].percentage };
                     const tution = await this.tution.create(newBody);
                     return {
-                        message: 'posted',
+                        message: 'tution created',
                         statusCode: 200,
-                        data: tution
+                        data: tution,
                     };
                 }
                 else {
                     throw new common_1.NotFoundException({
-                        message: 'only sudents can post tution', data: null,
-                        statusCode: 400
+                        message: 'only sudents can post tution',
+                        data: null,
+                        statusCode: 400,
                     });
                 }
             }
             else {
                 throw new common_1.NotFoundException({
-                    message: 'User not found.', data: null,
-                    statusCode: 400
+                    message: 'User not found.',
+                    data: null,
+                    statusCode: 400,
                 });
             }
         }
@@ -69,18 +72,20 @@ let TutionService = class TutionService {
     }
     async find() {
         try {
+            console.log(1);
             const tution = await this.tution.find().populate('user');
             if (tution.length == 0) {
                 throw new common_1.BadRequestException({
-                    message: 'Tutions not found.', data: null,
-                    statusCode: 400
+                    message: 'Tutions not found.',
+                    data: null,
+                    statusCode: 400,
                 });
             }
             else {
                 return {
                     message: 'tutions..',
                     statusCode: 200,
-                    data: tution
+                    data: tution,
                 };
             }
         }
@@ -90,27 +95,30 @@ let TutionService = class TutionService {
     }
     async findUserTution(id) {
         try {
+            console.log(2);
             const user = await this.findUser(id);
             if (user) {
                 const tution = await this.tution.find({ user: id });
                 if (tution.length === 0) {
                     throw new common_1.ServiceUnavailableException({
-                        message: 'No tutions found.', data: null,
-                        statusCode: 400
+                        message: 'No tutions found.',
+                        data: null,
+                        statusCode: 400,
                     });
                 }
                 else {
                     return {
                         message: 'tutions',
                         statusCode: 200,
-                        data: tution
+                        data: tution,
                     };
                 }
             }
             else {
                 throw new common_1.NotFoundException({
-                    message: 'User not found.', data: null,
-                    statusCode: 400
+                    message: 'User not found.',
+                    data: null,
+                    statusCode: 400,
                 });
             }
         }
@@ -126,43 +134,46 @@ let TutionService = class TutionService {
                     const tution = await this.tution.find({
                         $and: [
                             { user: { $eq: userId } },
-                            { proposalsReceived: { $eq: true } }
-                        ]
+                            { proposalsReceived: { $eq: true } },
+                        ],
                     });
                     if (tution) {
                         if (tution.length === 0) {
                             throw new common_1.NotFoundException({
                                 message: 'tutions not found.',
                                 data: null,
-                                statusCode: 400
+                                statusCode: 400,
                             });
                         }
                         else {
                             return {
                                 message: 'Tution found',
                                 statusCode: 200,
-                                data: tution
+                                data: tution,
                             };
                         }
                     }
                     else {
                         throw new common_1.NotFoundException({
-                            message: 'tution doesnot exsist.', data: null,
-                            statusCode: 400
+                            message: 'tution doesnot exsist.',
+                            data: null,
+                            statusCode: 400,
                         });
                     }
                 }
                 else {
                     throw new common_1.ServiceUnavailableException({
-                        message: 'only students can access this.', data: null,
-                        statusCode: 400
+                        message: 'only students can access this.',
+                        data: null,
+                        statusCode: 400,
                     });
                 }
             }
             else {
                 throw new common_1.ServiceUnavailableException({
-                    message: 'user not found.', data: null,
-                    statusCode: 400
+                    message: 'user not found.',
+                    data: null,
+                    statusCode: 400,
                 });
             }
         }
@@ -181,27 +192,30 @@ let TutionService = class TutionService {
                         return {
                             message: 'tution updated',
                             statusCode: 200,
-                            data: result
+                            data: result,
                         };
                     }
                     else {
                         throw new common_1.NotFoundException({
-                            message: 'tutin not found', data: null,
-                            statusCode: 400
+                            message: 'tutin not found',
+                            data: null,
+                            statusCode: 400,
                         });
                     }
                 }
                 else {
                     throw new common_1.NotFoundException({
-                        message: 'only student can access this.', data: null,
-                        statusCode: 400
+                        message: 'only student can access this.',
+                        data: null,
+                        statusCode: 400,
                     });
                 }
             }
             else {
                 throw new common_1.NotFoundException({
-                    message: 'user not found', data: null,
-                    statusCode: 400
+                    message: 'user not found',
+                    data: null,
+                    statusCode: 400,
                 });
             }
         }
@@ -216,38 +230,62 @@ let TutionService = class TutionService {
             if (user) {
                 if (user.userType === 'admin') {
                     const tution = await this.tution.aggregate([
-                        { $match: { 'status': value } },
+                        { $match: { status: value } },
                     ]);
                     if (tution.length === 0) {
                         throw new common_1.NotFoundException({
-                            message: 'Tution not found', data: null,
-                            statusCode: 400
+                            message: 'Tution not found',
+                            data: null,
+                            statusCode: 400,
                         });
                     }
                     else {
                         return {
                             message: 'Tution found.',
                             statusCode: 200,
-                            data: tution
+                            data: tution,
                         };
                     }
                 }
                 else {
                     throw new common_1.NotFoundException({
-                        message: 'Only admin can access this.', data: null,
-                        statusCode: 400
+                        message: 'Only admin can access this.',
+                        data: null,
+                        statusCode: 400,
                     });
                 }
             }
             else {
                 throw new common_1.NotFoundException({
-                    message: 'User not found.', data: null,
-                    statusCode: 400
+                    message: 'User not found.',
+                    data: null,
+                    statusCode: 400,
                 });
             }
         }
         catch (error) {
             console.log(error);
+            return error.response;
+        }
+    }
+    async deleteTution(id) {
+        try {
+            const tution = await this.tution.findOne({ _id: id });
+            if (!tution) {
+                throw new common_1.NotFoundException({
+                    message: 'tution not found',
+                    data: null,
+                    statusCode: 400,
+                });
+            }
+            const data = await this.tution.findByIdAndDelete({ _id: id });
+            return {
+                message: 'tution deleted',
+                statusCode: 200,
+                data
+            };
+        }
+        catch (error) {
             return error.response;
         }
     }

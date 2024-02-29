@@ -34,7 +34,6 @@ export class TutionController {
     }
   }
 
-
   @Get('/tutionIfProposalFound')
   findTutionIfProposalExsis(@Query('user') userId, @Query('tution') tutionId) {
     try {
@@ -60,6 +59,15 @@ export class TutionController {
       // return 'hello'
     } catch (error) {
       console.log(error)
+      return error.response
+    }
+  }
+
+  @Delete('/delete/:id')
+  deleteTution(@Param('id') id) {
+    try {
+      return this.tutionService.deleteTution(id)
+    } catch (error) {
       return error.response
     }
   }

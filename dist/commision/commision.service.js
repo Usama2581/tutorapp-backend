@@ -94,6 +94,9 @@ let CommisionService = class CommisionService {
             return error.response;
         }
     }
+    create() {
+        return this.commision.create({ percentage: 10 });
+    }
 };
 exports.CommisionService = CommisionService;
 exports.CommisionService = CommisionService = __decorate([

@@ -61,5 +61,14 @@ export class ProposalController {
       return error.response
      }
   }
+
+  @Delete('/delete/:id')
+  deleteProposal(@Param('id') id) {
+    try {
+      return this.proposalService.deleteProposal(id)
+    } catch (error) {
+      return error.response
+    }
+  }
     
 }
