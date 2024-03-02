@@ -10,5 +10,4 @@ export declare class ProposalController {
     getProposalByStatus(value: any, userId: any): Promise<any>;
     deleteProposal(id: any): any;
     findAllProposalOfUser(id: any): any;
-    findAllProposalOfTeacher(id: any): any;
 }

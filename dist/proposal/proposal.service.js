@@ -377,11 +377,9 @@ let ProposalService = class ProposalService {
                 }
                 const tutionIds = tutions.map((item) => item._id).toString();
                 const proposals = await this.proposal
-                    .find({
-                    tution: tutionIds,
-                })
+                    .find({ tution: tutionIds })
                     .populate('user')
-                    .populate('tution');
+                    .populate({ path: 'tution', populate: { path: 'user' } });
                 if (!proposals || proposals.length === 0) {
                     throw new common_1.NotFoundException({
                         message: 'proposal not found',
@@ -399,7 +397,7 @@ let ProposalService = class ProposalService {
                 const proposal = await this.proposal
                     .find({ user: id })
                     .populate('user')
-                    .populate('tution');
+                    .populate({ path: 'tution', populate: { path: 'user' } });
                 if (!proposal || proposal.length === 0) {
                     throw new common_1.BadRequestException({
                         message: 'proposal not found',
@@ -416,34 +414,6 @@ let ProposalService = class ProposalService {
         }
         catch (error) {
             throw error;
-        }
-    }
-    async findAllProposalsOfTeacher(id) {
-        try {
-            const user = await this.user.findOne({ _id: id });
-            if (!user) {
-                throw new common_1.NotFoundException({
-                    message: 'user not found',
-                    data: null,
-                    statusCode: 400,
-                });
-            }
-            const proposal = await this.proposal.find({ user: id }).populate('user');
-            if (!proposal || proposal.length === 0) {
-                throw new common_1.BadRequestException({
-                    message: 'proposal not found',
-                    statusCode: 400,
-                    data: null,
-                });
-            }
-            return {
-                statusCode: 200,
-                message: 'proposal',
-                data: proposal,
-            };
-        }
-        catch (error) {
-            return error.response;
         }
     }
 };

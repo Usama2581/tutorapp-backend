@@ -84,14 +84,6 @@ let ProposalController = class ProposalController {
             return error.response;
         }
     }
-    findAllProposalOfTeacher(id) {
-        try {
-            return this.proposalService.findAllProposalsOfTeacher(id);
-        }
-        catch (error) {
-            return error.response;
-        }
-    }
 };
 exports.ProposalController = ProposalController;
 __decorate([
@@ -153,13 +145,6 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], ProposalController.prototype, "findAllProposalOfUser", null);
-__decorate([
-    (0, common_1.Get)('/find/:id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], ProposalController.prototype, "findAllProposalOfTeacher", null);
 exports.ProposalController = ProposalController = __decorate([
     (0, common_1.Controller)('proposal'),
     __metadata("design:paramtypes", [proposal_service_1.ProposalService])

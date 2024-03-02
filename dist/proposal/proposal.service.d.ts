@@ -45,5 +45,4 @@ export declare class ProposalService {
             _id: import("mongoose").Types.ObjectId;
         }, never>, never>[];
     }>;
-    findAllProposalsOfTeacher(id: any): Promise<any>;
 }

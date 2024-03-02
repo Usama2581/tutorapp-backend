@@ -97,12 +97,12 @@ export class ProposalController {
     }
   }
 
-  @Get('/find/:id')
-  findAllProposalOfTeacher(@Param('id') id) {
-    try {
-      return this.proposalService.findAllProposalsOfTeacher(id);
-    } catch (error) {
-      return error.response;
-    }
-  }
+  // @Get('/find/:id')
+  // findAllProposalOfTeacher(@Param('id') id) {
+  //   try {
+  //     return this.proposalService.findAllProposalsOfTeacher(id);
+  //   } catch (error) {
+  //     return error.response;
+  //   }
+  // }
 }
