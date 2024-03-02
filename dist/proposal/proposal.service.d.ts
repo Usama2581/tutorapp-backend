@@ -36,6 +36,14 @@ export declare class ProposalService {
     acceptProposal(body: any): Promise<any>;
     rejectProposal(body: any): Promise<any>;
     updateProposal(userId: any, tutionId: any, body: any): Promise<any>;
-    getProposalByStatus(value: any, userId: any, tutionId: any): Promise<any>;
+    getProposalByStatus(value: any, userId: any): Promise<any>;
     deleteProposal(id: any): Promise<any>;
+    findAllProposalsOfUser(id: any): Promise<{
+        message: string;
+        statusCode: number;
+        data: Omit<Omit<import("mongoose").Document<unknown, {}, ProposalDocument> & import("./entities/proposal.entity").Proposal & Document & {
+            _id: import("mongoose").Types.ObjectId;
+        }, never>, never>[];
+    }>;
+    findAllProposalsOfTeacher(id: any): Promise<any>;
 }

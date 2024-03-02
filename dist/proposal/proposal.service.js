@@ -33,8 +33,10 @@ let ProposalService = class ProposalService {
                     if (body.amount >= 0) {
                         const tution = await this.tution.findOne({ _id: body.tution });
                         const proposal = await this.proposal.findOne({
-                            $and: [{ user: { $eq: body.user } },
-                                { tution: { $eq: body.tution } }]
+                            $and: [
+                                { user: { $eq: body.user } },
+                                { tution: { $eq: body.tution } },
+                            ],
                         });
                         if (tution) {
                             if (!proposal) {
@@ -43,27 +45,30 @@ let ProposalService = class ProposalService {
                                 return {
                                     message: 'Proposal submitted.',
                                     statusCode: 200,
-                                    data: updatedTution
+                                    data: updatedTution,
                                 };
                             }
                             else {
                                 throw new common_1.ConflictException({
-                                    message: 'you cannot apply again.', data: null,
-                                    statusCode: 400
+                                    message: 'you cannot apply again.',
+                                    data: null,
+                                    statusCode: 400,
                                 });
                             }
                         }
                         else {
                             throw new common_1.NotFoundException({
-                                message: 'Tution does not exsist.', data: null,
-                                statusCode: 400
+                                message: 'Tution does not exsist.',
+                                data: null,
+                                statusCode: 400,
                             });
                         }
                     }
                     else {
                         throw new common_1.ServiceUnavailableException({
-                            message: `Invalid amount ${body.amount}`, data: null,
-                            statusCode: 400
+                            message: `Invalid amount ${body.amount}`,
+                            data: null,
+                            statusCode: 400,
                         });
                     }
                 }
@@ -71,14 +76,15 @@ let ProposalService = class ProposalService {
                     throw new common_1.ServiceUnavailableException({
                         message: 'Only teachers can add proposal.',
                         data: null,
-                        statusCode: 400
+                        statusCode: 400,
                     });
                 }
             }
             else {
                 throw new common_1.NotFoundException({
-                    message: 'User not found.', data: null,
-                    statusCode: 400
+                    message: 'User not found.',
+                    data: null,
+                    statusCode: 400,
                 });
             }
         }
@@ -93,22 +99,24 @@ let ProposalService = class ProposalService {
                 const proposal = await this.proposal.find({ tution: id });
                 if (proposal.length === 0) {
                     throw new common_1.BadRequestException({
-                        message: 'No proposals found.', data: null,
-                        statusCode: 400
+                        message: 'No proposals found.',
+                        data: null,
+                        statusCode: 400,
                     });
                 }
                 else {
                     return {
                         message: 'proposals',
                         statusCode: 200,
-                        data: proposal
+                        data: proposal,
                     };
                 }
             }
             else {
                 throw new common_1.NotFoundException({
-                    message: 'Tution not found.', data: null,
-                    statusCode: 400
+                    message: 'Tution not found.',
+                    data: null,
+                    statusCode: 400,
                 });
             }
         }
@@ -124,40 +132,47 @@ let ProposalService = class ProposalService {
                 if (teacher) {
                     const tution = await this.tution.findOne({ _id: body.tution });
                     if (tution) {
-                        const proposal = await this.proposal.findOne({ tution: body.tution, user: body.teacherId });
+                        const proposal = await this.proposal.findOne({
+                            tution: body.tution,
+                            user: body.teacherId,
+                        });
                         if (proposal) {
                             const newProposal = await this.proposal.findByIdAndUpdate({ _id: proposal._id }, { status: 'accepted' }, { new: true });
                             return {
                                 message: 'propsal accepted ',
                                 statusCode: 200,
-                                data: newProposal
+                                data: newProposal,
                             };
                         }
                         else {
                             throw new common_1.NotFoundException({
-                                message: 'Proposal not found.', data: null,
-                                statusCode: 400
+                                message: 'Proposal not found.',
+                                data: null,
+                                statusCode: 400,
                             });
                         }
                     }
                     else {
                         throw new common_1.NotFoundException({
-                            message: 'Tution not found.', data: null,
-                            statusCode: 400
+                            message: 'Tution not found.',
+                            data: null,
+                            statusCode: 400,
                         });
                     }
                 }
                 else {
                     throw new common_1.NotFoundException({
-                        message: 'Teacher not found', data: null,
-                        statusCode: 400
+                        message: 'Teacher not found',
+                        data: null,
+                        statusCode: 400,
                     });
                 }
             }
             else {
                 throw new common_1.NotFoundException({
-                    message: 'Student not found', data: null,
-                    statusCode: 400
+                    message: 'Student not found',
+                    data: null,
+                    statusCode: 400,
                 });
             }
         }
@@ -173,13 +188,16 @@ let ProposalService = class ProposalService {
                 if (teacher) {
                     const tution = await this.tution.findOne({ _id: body.tution });
                     if (tution) {
-                        const proposal = await this.proposal.findOne({ tution: body.tution, user: body.teacherId });
+                        const proposal = await this.proposal.findOne({
+                            tution: body.tution,
+                            user: body.teacherId,
+                        });
                         if (proposal) {
                             const newProposal = await this.proposal.findByIdAndUpdate({ _id: proposal._id }, { status: 'rejected' }, { new: true });
                             return {
                                 message: 'Proposal rejected',
                                 statusCode: 200,
-                                newProposal
+                                newProposal,
                             };
                         }
                         else {
@@ -209,40 +227,47 @@ let ProposalService = class ProposalService {
                 if (user.userType === 'teacher') {
                     const tution = await this.tution.findOne({ _id: tutionId });
                     if (tution) {
-                        const proposal = await this.proposal.findOne({ tution: tutionId, user: userId });
+                        const proposal = await this.proposal.findOne({
+                            tution: tutionId,
+                            user: userId,
+                        });
                         if (proposal) {
                             const newProposal = await this.proposal.findByIdAndUpdate({ _id: proposal._id }, body, { new: true });
                             return {
                                 message: 'Proposal updated',
                                 statusCode: 200,
-                                data: newProposal
+                                data: newProposal,
                             };
                         }
                         else {
                             throw new common_1.NotFoundException({
-                                message: 'Your proposal not found', data: null,
-                                statusCode: 400
+                                message: 'Your proposal not found',
+                                data: null,
+                                statusCode: 400,
                             });
                         }
                     }
                     else {
                         throw new common_1.NotFoundException({
-                            message: "Tution not found.", data: null,
-                            statusCode: 400
+                            message: 'Tution not found.',
+                            data: null,
+                            statusCode: 400,
                         });
                     }
                 }
                 else {
                     throw new common_1.NotFoundException({
-                        message: "Only teachers can write and update proposals.", data: null,
-                        statusCode: 400
+                        message: 'Only teachers can write and update proposals.',
+                        data: null,
+                        statusCode: 400,
                     });
                 }
             }
             else {
                 throw new common_1.NotFoundException({
-                    message: "User not found.", data: null,
-                    statusCode: 400
+                    message: 'User not found.',
+                    data: null,
+                    statusCode: 400,
                 });
             }
         }
@@ -250,55 +275,63 @@ let ProposalService = class ProposalService {
             return error.response;
         }
     }
-    async getProposalByStatus(value, userId, tutionId) {
-        console.log(userId);
+    async getProposalByStatus(value, userId) {
         try {
             const user = await this.user.findOne({ _id: userId });
-            if (user) {
-                if (user.userType === 'admin') {
-                    const tution = await this.tution.findOne({ _id: tutionId });
-                    if (tution) {
-                        const proposals = await this.proposal.aggregate([
-                            { $match: { 'status': value } },
-                            { $match: { 'tution': tutionId } }
-                        ]);
-                        if (proposals.length === 0) {
-                            throw new common_1.NotFoundException({
-                                message: 'proposals not found', data: null,
-                                statusCode: 400
-                            });
-                        }
-                        else {
-                            return {
-                                statusCode: 200,
-                                message: 'Proposals found',
-                                data: proposals
-                            };
-                        }
-                    }
-                    else {
-                        throw new common_1.NotFoundException({
-                            message: 'Tution not found.', data: null,
-                            statusCode: 400
-                        });
-                    }
-                }
-                else {
-                    throw new common_1.NotFoundException({
-                        message: 'Only admin can access this.', data: null,
-                        statusCode: 400
+            if (!user) {
+                throw new common_1.BadRequestException({
+                    message: 'user not found',
+                    statusCode: 400,
+                    data: null,
+                });
+            }
+            if (user.userType === 'student') {
+                const tutions = await this.tution.find({ user: userId });
+                if (!tutions) {
+                    throw new common_1.BadRequestException({
+                        message: 'tution of this user not exsist',
+                        data: null,
+                        statusCode: 400,
                     });
                 }
+                const tutionIds = tutions.map((item) => item._id).toString();
+                const proposals = await this.proposal
+                    .find({
+                    tution: tutionIds,
+                })
+                    .populate('user');
+                if (!proposals || proposals.length === 0) {
+                    throw new common_1.NotFoundException({
+                        message: 'proposal not found',
+                        data: null,
+                        statusCode: 400,
+                    });
+                }
+                return {
+                    message: 'proposal found',
+                    statusCode: 200,
+                    data: proposals,
+                };
             }
             else {
-                throw new common_1.NotFoundException({
-                    message: 'User not found.', data: null,
-                    statusCode: 400
-                });
+                const proposal = await this.proposal
+                    .find({ $and: [{ user: userId }, { status: value }] })
+                    .populate('user');
+                if (!proposal || proposal.length === 0) {
+                    throw new common_1.BadRequestException({
+                        message: 'proposal not found',
+                        statusCode: 400,
+                        data: null,
+                    });
+                }
+                return {
+                    statusCode: 200,
+                    message: 'proposal',
+                    data: proposal,
+                };
             }
         }
         catch (error) {
-            console.log(error);
             return error.response;
         }
     }
@@ -316,7 +349,97 @@ let ProposalService = class ProposalService {
             return {
                 message: 'proposal deleted',
                 statusCode: 200,
-                data
+                data,
+            };
+        }
+        catch (error) {
+            return error.response;
+        }
+    }
+    async findAllProposalsOfUser(id) {
+        try {
+            const user = await this.user.findOne({ _id: id });
+            if (!user) {
+                throw new common_1.NotFoundException({
+                    data: null,
+                    message: 'User not found',
+                    statusCode: 400,
+                });
+            }
+            if (user.userType === 'student') {
+                const tutions = await this.tution.find({ user: id });
+                if (!tutions) {
+                    throw new common_1.BadRequestException({
+                        message: 'tution of this user not exsist',
+                        data: null,
+                        statusCode: 400,
+                    });
+                }
+                const tutionIds = tutions.map((item) => item._id).toString();
+                const proposals = await this.proposal
+                    .find({
+                    tution: tutionIds,
+                })
+                    .populate('user')
+                    .populate('tution');
+                if (!proposals || proposals.length === 0) {
+                    throw new common_1.NotFoundException({
+                        message: 'proposal not found',
+                        data: null,
+                        statusCode: 400,
+                    });
+                }
+                return {
+                    message: 'proposals found',
+                    statusCode: 200,
+                    data: proposals,
+                };
+            }
+            else {
+                const proposal = await this.proposal
+                    .find({ user: id })
+                    .populate('user')
+                    .populate('tution');
+                if (!proposal || proposal.length === 0) {
+                    throw new common_1.BadRequestException({
+                        message: 'proposal not found',
+                        statusCode: 400,
+                        data: null,
+                    });
+                }
+                return {
+                    statusCode: 200,
+                    message: 'proposal',
+                    data: proposal,
+                };
+            }
+        }
+        catch (error) {
+            throw error;
+        }
+    }
+    async findAllProposalsOfTeacher(id) {
+        try {
+            const user = await this.user.findOne({ _id: id });
+            if (!user) {
+                throw new common_1.NotFoundException({
+                    message: 'user not found',
+                    data: null,
+                    statusCode: 400,
+                });
+            }
+            const proposal = await this.proposal.find({ user: id }).populate('user');
+            if (!proposal || proposal.length === 0) {
+                throw new common_1.BadRequestException({
+                    message: 'proposal not found',
+                    statusCode: 400,
+                    data: null,
+                });
+            }
+            return {
+                statusCode: 200,
+                message: 'proposal',
+                data: proposal,
             };
         }
         catch (error) {

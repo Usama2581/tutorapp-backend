@@ -7,6 +7,8 @@ export declare class ProposalController {
     acceptProposal(body: any): any;
     rejectProposal(body: any): any;
     updateProposal(body: any, userId: any, tutionId: any): any;
-    getProposalByStatus(value: any, userId: any, tutionId: any): Promise<any>;
+    getProposalByStatus(value: any, userId: any): Promise<any>;
     deleteProposal(id: any): any;
+    findAllProposalOfUser(id: any): any;
+    findAllProposalOfTeacher(id: any): any;
 }
